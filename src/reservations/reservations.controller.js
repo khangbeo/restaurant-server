@@ -61,7 +61,9 @@ async function read(req, res) {
 }
 
 async function create(req, res) {
-  const data = await service.create(req.body.data)
+  let data = await service.create(req.body.data)
+
+  console.log(data)
   res.status(201).json({ data })
 }
 
@@ -113,8 +115,9 @@ function hasValidPeople(req, res, next) {
 function hasValidDate(req, res, next) {
   const { data: { reservation_date, reservation_time } } = req.body
   const dateInput = new Date(`${reservation_date} ${reservation_time}`)
-  let dayUTC = dayjs(dateInput)
-  dayUTC.local().format()
+  let dayUTC = dayjs(dateInput).local().format()
+  let dayOfWeek = dayjs(dayUTC).day()
+  console.log(dayOfWeek)
   const today = new Date()
   const dateFormat = /\d\d\d\d-\d\d-\d\d/
   if (!reservation_date) {
@@ -129,7 +132,7 @@ function hasValidDate(req, res, next) {
       message: `reservation_date is invalid`
     })
   }
-  if ((dayUTC.day() - 1) === 2) {
+  if (dayOfWeek === 2) {
     return next({
       status: 400,
       message: `The restaurant is closed on Tuesday.`
