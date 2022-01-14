@@ -117,7 +117,7 @@ function hasValidDate(req, res, next) {
   const dateInput = new Date(`${reservation_date} ${reservation_time}`)
   let dayUTC = dayjs(dateInput).local().format()
   let dayOfWeek = dayjs(dayUTC).day()
-  const today = dayjs().local().format()
+  const today = dayjs()
   const dateFormat = /\d\d\d\d-\d\d-\d\d/
   if (!reservation_date) {
     return next({
