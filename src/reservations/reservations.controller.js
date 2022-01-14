@@ -129,7 +129,7 @@ function hasValidDate(req, res, next) {
       message: `reservation_date is invalid`
     })
   }
-  if (dayUTC.day() === 2) {
+  if ((dayUTC.day() - 1) === 2) {
     return next({
       status: 400,
       message: `The restaurant is closed on Tuesday.`
