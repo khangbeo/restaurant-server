@@ -113,12 +113,12 @@ function hasValidPeople(req, res, next) {
 }
 
 function hasValidDate(req, res, next) {
-  const { data: { reservation_date, reservation_time } } = req.body
+  const { data: { reservation_date, reservation_time } } = req.body // UTC
   const trimmedDate = reservation_date.substring(0, 10)
-  const dateInput = new Date(`${trimmedDate} ${reservation_time}`)
-  let dayUTC = dayjs(dateInput).local().format()
-  let dayOfWeek = dayjs(dayUTC).day()
-  const today = dayjs()
+  const dateInput = new Date(`${trimmedDate} ${reservation_time}`) // UTC
+  let dayUTC = dayjs(dateInput).local().format() // local
+  let dayOfWeek = dayjs(dayUTC).day() // local 
+  const today = dayjs().format() // local
   // console.log(trimmedDate)
   // console.log(dayUTC)
   // console.log(today)
@@ -146,7 +146,7 @@ function hasValidDate(req, res, next) {
   if (res.locals.reservation) {
     return next()
   }
-  if (dateInput < today) {
+  if (dayUTC < today) {
     return next({
       status: 400,
       message: `Reservations can't be in the past. Please pick a future date.`
