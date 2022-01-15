@@ -115,7 +115,7 @@ function hasValidPeople(req, res, next) {
 function hasValidDate(req, res, next) {
   const { data: { reservation_date, reservation_time } } = req.body
   const trimmedDate = reservation_date.substring(0, 10)
-  const dateInput = new Date(`${reservation_date} ${reservation_time}`)
+  const dateInput = new Date(`${trimmedDate} ${reservation_time}`)
   let dayUTC = dayjs(dateInput).local().format()
   let dayOfWeek = dayjs(dayUTC).day()
   const today = dayjs().local().format()
@@ -130,7 +130,7 @@ function hasValidDate(req, res, next) {
       message: 'reservation_date is empty'
     })
   }
-  if (!reservation_date.match(dateFormat)) {
+  if (!trimmedDate.match(dateFormat)) {
     return next({
       status: 400,
       message: `reservation_date is invalid`
