@@ -115,9 +115,9 @@ function hasValidPeople(req, res, next) {
 function hasValidDate(req, res, next) {
   const { data: { reservation_date, reservation_time } } = req.body
   const dateInput = new Date(`${reservation_date} ${reservation_time}`)
-  let dayUTC = dayjs(dateInput).local().format()
-  let dayOfWeek = dayjs(dayUTC).day()
-  const today = dayjs()
+  let dayUTC = dayjs(dateInput)
+  dayUTC.local().format()
+  const today = new Date()
   const dateFormat = /\d\d\d\d-\d\d-\d\d/
   if (!reservation_date) {
     return next({
@@ -131,7 +131,7 @@ function hasValidDate(req, res, next) {
       message: `reservation_date is invalid`
     })
   }
-  if (dayOfWeek === 2) {
+  if (dayUTC.day() === 2) {
     return next({
       status: 400,
       message: `The restaurant is closed on Tuesday.`
@@ -140,7 +140,7 @@ function hasValidDate(req, res, next) {
   if (res.locals.reservation) {
     return next()
   }
-  if (dayUTC < today) {
+  if (dateInput < today) {
     return next({
       status: 400,
       message: `Reservations can't be in the past. Please pick a future date.`
@@ -148,6 +148,7 @@ function hasValidDate(req, res, next) {
   }
   next()
 }
+
 function hasValidTime(req, res, next) {
   const { data: { reservation_time } } = req.body
   const timeFormat = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/
