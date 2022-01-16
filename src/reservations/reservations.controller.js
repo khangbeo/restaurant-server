@@ -173,7 +173,7 @@ function hasValidTime(req, res, next) {
       message: `reservation_time is invalid`
     })
   }
-  if (reservation_time <= "10:30:00") {
+  if (reservation_time < "10:30:00") {
     return next({
       status: 400,
       message: `reservation_time can't be before 10:30 AM`
