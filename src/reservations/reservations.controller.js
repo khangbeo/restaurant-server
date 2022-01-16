@@ -11,7 +11,9 @@ const hasRequiredProperties = hasProperties(
 )
 const dayjs = require('dayjs')
 const utc = require('dayjs/plugin/utc')
+const timezone = require('dayjs/plugin/timezone')
 dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const VALID_PROPERTIES = [
   'first_name',
@@ -115,8 +117,9 @@ function hasValidPeople(req, res, next) {
 function hasValidDate(req, res, next) {
   const { data: { reservation_date, reservation_time } } = req.body // UTC
   const trimmedDate = reservation_date.substring(0, 10)
-  const dateInput = new Date(`${trimmedDate} ${reservation_time}`) // UTC
-  const today = new Date()
+  const dateInput = dayjs(trimmedDate + ' ' + reservation_time) // UTC
+
+  const today = dayjs()
 
   const day = dayjs(dateInput).day()
 
